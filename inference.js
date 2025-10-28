@@ -1,7 +1,4 @@
-/* inference.js
-   Forward chaining + Certainty Factor combining.
-   Expose: loadRules(url), runInference(rulesData, userInputs)
-*/
+
 
 async function loadRules(url = 'rules.json') {
   const r = await fetch(url);
