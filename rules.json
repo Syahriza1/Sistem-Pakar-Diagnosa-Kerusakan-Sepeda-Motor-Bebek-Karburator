@@ -1,0 +1,149 @@
+{
+  "metadata": {
+    "source": "Sistem Pakar Diagnosa Kerusakan Sepeda Motor Bebek Karburator",
+    "uncertain_terms": {
+      "Tidak": 0.0,
+      "Mungkin": 0.4,
+      "Yakin": 0.6,
+      "Sangat Yakin": 0.8
+    }
+  },
+  "rules": [
+    {
+      "id": "R-K01",
+      "if": ["G-01","G-03","G-05","G-06","G-15"],
+      "then": "K-01",
+      "cf": 0.8,
+      "desc": "Pilot jet dan main jet bermasalah"
+    },
+    {
+      "id": "R-K02",
+      "if": ["G-01","G-02","G-03"],
+      "then": "K-02",
+      "cf": 0.75,
+      "desc": "Karburator kotor"
+    },
+    {
+      "id": "R-K03",
+      "if": ["G-04","G-05","G-08"],
+      "then": "K-03",
+      "cf": 0.7,
+      "desc": "Tali gas korosif"
+    },
+    {
+      "id": "R-K04",
+      "if": ["G-01","G-03","G-05","G-07"],
+      "then": "K-04",
+      "cf": 0.7,
+      "desc": "Setelan karburator tidak pas"
+    },
+    {
+      "id": "R-K05",
+      "if": ["G-11","G-12","G-13"],
+      "then": "K-05",
+      "cf": 0.85,
+      "desc": "Kerusakan Aki"
+    },
+    {
+      "id": "R-K06",
+      "if": ["G-03","G-09","G-14","G-16","G-18","G-20","G-21","G-24"],
+      "then": "K-06",
+      "cf": 0.8,
+      "desc": "Kerusakan piston"
+    },
+    {
+      "id": "R-K07",
+      "if": ["G-03","G-05","G-07","G-10","G-31"],
+      "then": "K-07",
+      "cf": 0.75,
+      "desc": "Kerusakan klep"
+    },
+    {
+      "id": "R-K08",
+      "if": ["G-17","G-19","G-22","G-23"],
+      "then": "K-08",
+      "cf": 0.8,
+      "desc": "Kerusakan speedometer"
+    },
+    {
+      "id": "R-K09",
+      "if": ["G-10","G-30"],
+      "then": "K-09",
+      "cf": 0.7,
+      "desc": "Kerusakan digital CDI"
+    },
+    {
+      "id": "R-K10",
+      "if": ["G-01","G-25","G-26","G-45"],
+      "then": "K-10",
+      "cf": 0.72,
+      "desc": "Kerusakan rotary transmisi"
+    },
+    {
+      "id": "R-K11",
+      "if": ["G-27","G-28","G-29"],
+      "then": "K-11",
+      "cf": 0.75,
+      "desc": "Kerusakan rem kopling"
+    },
+    {
+      "id": "R-K12",
+      "if": ["G-32","G-33","G-34","G-35"],
+      "then": "K-12",
+      "cf": 0.8,
+      "desc": "Sealsock beker depan bocor"
+    },
+    {
+      "id": "R-K13",
+      "if": ["G-36","G-37"],
+      "then": "K-13",
+      "cf": 0.78,
+      "desc": "Seal master rem bocor"
+    },
+    {
+      "id": "R-K14",
+      "if": ["G-10","G-12","G-38"],
+      "then": "K-14",
+      "cf": 0.75,
+      "desc": "Kerusakan regulator motor"
+    },
+    {
+      "id": "R-K15",
+      "if": ["G-39","G-40"],
+      "then": "K-15",
+      "cf": 0.8,
+      "desc": "Bearing roda rusak"
+    },
+    {
+      "id": "R-K16",
+      "if": ["G-41","G-42","G-43","G-44"],
+      "then": "K-16",
+      "cf": 0.82,
+      "desc": "Kerusakan electric starter"
+    },
+
+    {
+      "id": "R-K02b",
+      "if": ["G-05","G-15"],
+      "then": "K-02",
+      "cf": 0.6,
+      "desc": "Karburator kotor (paralel, gejala lain)"
+    },
+
+    {
+      "id": "R-SEQ-1",
+      "if": ["K-02","G-10"],
+      "then": "K-07",
+      "cf": 0.65,
+      "desc": "Jika karburator kotor + mesin sering mati → kemungkinan klep terpengaruh"
+    },
+
+    {
+      "id": "R-K01b",
+      "if": ["G-01","G-15","G-05"],
+      "then": "K-01",
+      "cf": 0.6,
+      "desc": "Pilot/main jet bermasalah (paralel rule)"
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Diagnosa - Bengkel Waras</title>
+<link rel="stylesheet" href="">
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background:#f2f7fb; margin:0; color:#0b2b40; }
+  header { background:#0f4c81; color:white; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; }
+  .title { font-weight:700; }
+  .container { max-width:920px; margin:16px auto; padding:0 12px; }
+  .card { background:white; border-radius:8px; padding:14px; box-shadow:0 6px 18px rgba(12,20,40,0.06); }
+  table { width:100%; border-collapse:collapse; margin-top:12px; }
+  th, td { padding:10px 8px; border-bottom:1px solid #eef2f6; text-align:left; font-size:14px; }
+  select { padding:6px; border-radius:6px; }
+  .btn { padding:10px 14px; border-radius:8px; color:white; text-decoration:none; display:inline-block; border:none; cursor:pointer; }
+  .btn-primary { background:#0f4c81; }
+  .btn-secondary { background:#ef4444; }
+  .actions { margin-top:12px; display:flex; gap:8px; justify-content:flex-end; }
+  .note { margin-top:8px; color:#475569; font-size:13px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="title">Bengkel Waras</div>
+    <div></div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <h3>Lakukan Diagnosa Gejala Yang Sepeda Motor Anda Alami</h3>
+      <p class="note">Pilih tingkat keyakinan untuk gejala yang sesuai. (Tidak / Mungkin / Yakin / Sangat Yakin)</p>
+
+      <form id="diagForm">
+        <table id="symptomTable">
+          <thead>
+            <tr>
+              <th>Gejala</th>
+              <th style="width:210px;">Tingkat Keyakinan Anda</th>
+            </tr>
+          </thead>
+          <tbody id="tbodySymptoms"></tbody>
+        </table>
+
+        <div class="actions">
+          <button type="button" id="btnBack" class="btn" onclick="location.href='index.html'">Kembali</button>
+          <button type="button" id="btnSubmit" class="btn btn-primary">Lakukan Diagnosa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="inference.js"></script>
+<script>
+(function(){
+  // symptom labels (from PDF)
+  const symptomMap = {
+    "G-01":"Mesin tersendat-sendat saat dijalan",
+    "G-02":"Bahan bakar bocor keluar dari selang pembuangan",
+    "G-03":"Mesin motor susah dinyalakan",
+    "G-04":"Tarikan pada gas seret",
+    "G-05":"Bahan bakar boros",
+    "G-06":"Mesin mati saat di gas",
+    "G-07":"Mesin motor tidak bisa stasioner",
+    "G-08":"Mesin motor ngegas dengan sendirinya",
+    "G-09":"Suara kasar pada knalpot",
+    "G-10":"Mesin sering macet / mati mendadak",
+    "G-11":"Sistem starter elektrik tidak berfungsi",
+    "G-12":"Cahaya lampu motor menjadi redup atau tidak berfungsi",
+    "G-13":"Klakson menjadi kurang nyaring atau tidak berfungsi",
+    "G-14":"Mesin motor cepat panas",
+    "G-15":"Knalpot mengeluarkan asap hitam",
+    "G-16":"Knalpot mengeluarkan asap putih",
+    "G-17":"Lampu ornament mati pada saat mesin dihidupkan",
+    "G-18":"Oli mesin cepat habis",
+    "G-19":"Lampu gigi transmisi mati pada saat mesin dihidupkan",
+    "G-20":"Busi mudah mati",
+    "G-21":"Saat menutup gas pada knalpot berbunyi suara ledakan",
+    "G-22":"Matinya sensor bensin",
+    "G-23":"Matinya jarum speedometer",
+    "G-24":"Tenaga yang dihasilkan lemah",
+    "G-25":"Saat memasukkan gigi transmisi timbul suara kasar",
+    "G-26":"Gigi transmisi susah dimasukkan",
+    "G-27":"Selip terasa sangat ringan saat dihidupkan secara manual",
+    "G-28":"Pada saat memindahkan gigi timbul hentakan",
+    "G-29":"Saat memasukkan gigi transmisi sering loss",
+    "G-30":"Mesin motor tidak bisa dinyalakan",
+    "G-31":"Ketika dikick starter terlalu enteng",
+    "G-32":"Timbul suara kasar ketika dipakai dijalan yang rusak",
+    "G-33":"Oli Sock beker cepat habis",
+    "G-34":"Keluar oli pada sock beker depan",
+    "G-35":"Motor tidak stabil saat dipakai berbelok",
+    "G-36":"Oli rem cepat habis",
+    "G-37":"Rem cakram tidak bisa digunakan",
+    "G-38":"Aki motor tiba-tiba melemah",
+    "G-39":"Roda mengalami ogel",
+    "G-40":"Roda motor macet",
+    "G-41":"Tidak berbunyi saat dihidupkan menggunakan electric starter",
+    "G-42":"Saat dihidupkan electric starter selip tidak mau berputar namun bunyi ada",
+    "G-43":"Dynamo starter mengeluarkan suara kasar",
+    "G-44":"Dynamo starter panas",
+    "G-45":"Gigi prosneling bisa loncat dengan sendirinya"
+  };
+
+  const tbody = document.getElementById('tbodySymptoms');
+
+  for (const code of Object.keys(symptomMap)) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${code}</strong> — ${symptomMap[code]}</td>
+      <td>
+        <select name="${code}">
+          <option value="Tidak" selected>Tidak</option>
+          <option value="Mungkin">Mungkin</option>
+          <option value="Yakin">Yakin</option>
+          <option value="Sangat Yakin">Sangat Yakin</option>
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('btnSubmit').addEventListener('click', () => {
+    const form = document.getElementById('diagForm');
+    const fd = new FormData(form);
+    const inputs = {};
+    for (const [k,v] of fd.entries()) {
+      inputs[k] = v;
+    }
+    // store into localStorage
+    localStorage.setItem('diagnosaInputs', JSON.stringify(inputs));
+    // redirect to hasil
+    window.location.href = 'hasil.html';
+  });
+
+})();
+</script>
+</body>
+</html>
